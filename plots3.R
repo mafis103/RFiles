@@ -1,4 +1,11 @@
 # theme used for graphs in the textbook and course
+#install.packages("ggplot2")
+library(dslabs)
+# load libraries
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+library(ggthemes)
 library(dslabs)
 ds_theme_set()
 
@@ -7,11 +14,7 @@ library(ggthemes)
 p + theme_economist()    # style of the Economist magazine
 p + theme_fivethirtyeight()    # style of the FiveThirtyEight website
 
-# load libraries
-library(tidyverse)
-library(ggrepel)
-library(ggthemes)
-library(dslabs)
+
 data(murders)
 
 # define the intercept

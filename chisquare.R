@@ -37,7 +37,7 @@ tibble(awarded = c("no", "yes"),
 # chi-squared test
 chisq_test <- two_by_two %>%
   select(-awarded) %>%
-  nbsp;   chisq.test()
+chisq.test()
 chisq_test$p.value
 
 # odds of getting funding for men
