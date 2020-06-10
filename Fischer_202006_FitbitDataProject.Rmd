@@ -3,7 +3,8 @@ title: "Fitbit Data Analysis"
 author: "Marie-Luise Fischer"
 date: "6/10/2020"
 output: 
-  pdf_document:
+  pdf_document: 
+    fig_caption: yes
     toc: true
     toc_depth: 2
     pandoc_args: ["--extract-media", "."]
@@ -61,7 +62,7 @@ The following method was used (pure mean):
 mean(Minutes_REM,na.rm = TRUE)
 ```
 
- 
+\newpage 
 ## Data Exploration
 The data ranges from 05/2018-02/2020. There are 703 observations and 19 columns in `fitbit_data`, containing detailed information about activities and sleep.
 
@@ -82,12 +83,9 @@ The only `NA` values are located in the columns `Minutes_REM`,    `Minutes_light
 Before 01/01/2019 and in a timeframe between 12/01/2019 - 12/15/2019, all values are `NA`. In all other cases, `NA` is only for individual nights. Those coherent timeframes are consistent with a different device that was unable to track the data precisely.
 
 The other `NA`s however were unevenly distributed and not coherent. Note that for those values however, the `Minutes_slept` value is still existent!
-Those were filtered and marked in Figure \ref{fig:na_sleep_values}.
+Those were filtered and marked in the following figure.
 
-```{r na_sleep_values, echo=FALSE, fig.cap="NA sleep values", out.width = '100%'}
-knitr::include_graphics("https://i.ibb.co/nsFLV6z/naps.png") 
-```
-
+![NA sleep values](https://github.com/mafis103/RFiles/blob/master/naps.png?raw=true) 
 
 This plot implicates that quite some of those values are rather short sleep periods, possibly too short to get to different sleep phases. Most of the individual `NA` values are significantly under der average sleeptime.
 
@@ -95,11 +93,9 @@ This plot implicates that quite some of those values are rather short sleep peri
 Something that seems quite obvious is that behavior is not the same throughout the week. One would expect longer sleep periods during weekends and potentially irregular activity levels. Those might affect calorie expenditure and amount of steps per weekday.
 I decided to check on this hypothesis.
 
-```{r weekday_effect, echo=FALSE, fig.cap="Weekday effect", out.width = '100%'}
-knitr::include_graphics("Weekday_effect_fitbit.png")
-```
+![Weekday effect](https://github.com/mafis103/RFiles/blob/master/Weekday_effect_fitbit.png?raw=true)
 
-The blue lines in all plots of Figure \ref{fig:weekday_effect} indicate the average value. 
+The blue lines in all plots indicate the average value. 
 For sleep, it becomes obvious that I sleep on average longer on Fridays and Saturdays, whereas Saturday also has the biggest interrange quartile (between approx 300 and 430 Minutes). In general, the quartiles are all rather similar and rather small across the weekdays.
 
 When it comes to calorie expenditure, all days except for Sunday have a median above average with a similarly small quartile and low interquartile range.
@@ -118,7 +114,7 @@ Inactivity, measured by minutes spent sitting, are across all weekdays very simi
 
 In the Fitbit dataset, there is quite some level of detail for different sleep phases. It appears obvious that activities might have an impact on sleep quality and sleep duration. I decided to explore the data via some plots around sleep details:
 
-![Sleepdetails](sleepdetails.png)
+![Sleepdetails](https://github.com/mafis103/RFiles/blob/master/sleepdetails.png?raw=true)
 
 The first plot shows the correlation between overall time spent sleeping and the number of times I woke up per night. As to be expected, with higher sleep duration the number of wakeups tends to increase. We can see a similar positive correlation between time awake (meaning time that I was awake while I was in bed) and amount of wakeups.
 
@@ -140,7 +136,7 @@ After the data exploration via plots, a more holistic view on driving factors fo
 
 For calorie expenditure, the full data set of `fitbit_data` was used, resulting in the following tree:
 
-![](Tree_calories_burned.png)
+![Regression Tree: Calories burned](https://github.com/mafis103/RFiles/blob/master/Tree_calories_burned.png?raw=true)
 
 The main driver for the burned calories is the calories burned by sports (calories_activities). The value for differentiation is 1227 (kcal). 55% of the data lies above that value, 20% of the values even have a value greater than 1505 (kcal). If the value is between 1227 and 1505, Distance < 10 (in km) is the differentiating factor. Only 8% of the data is from days where the calories burned by sports were below 1505 (kcal) but the walked distance was above 10 (km).
 
@@ -154,7 +150,7 @@ For sleep duration, the data set of `fitbit_data` still contained data that woul
 
 Therefore, those columns are excluded first and the tree is built with the data frame `fitbit_data_stripped`.
 
-![](Tree_sleep.png)
+![Regression Tree: Sleep Duration](https://github.com/mafis103/RFiles/blob/master/Tree_sleep.png?raw=true)
 
 The top of the tree is `Levels` which describes how many floors - or how much altitude - were overcome at a given day. 62% of the data lay above a value of 4. For that 62 %, the next determining factor is indeed the Weekday: 54% of the data goes directly to a leaf, explicitly all weekdays except for Friday. For Friday, the only remaining node differentiates by looking at the time spent sitting with a differentiating value of 553 (minutes).
 
@@ -174,6 +170,10 @@ prediction(cal_tolerance, fitbit_test, fitbit_train, "Calories_Burned",
            "+-Tolerance (in kcal)", "Performance of model")
 ```
 
+The following models were used besides the naive approach mentioned above:
+```{r eval=FALSE}
+models <- c("rf", "glm", "svmLinear", "knn")
+```
 
 
 ### Calorie Expenditure Prediction
@@ -215,7 +215,7 @@ The following plot shows the performance of all models for different tolerance v
 
 The plot also contains an ensemble-line that results from uniting all models.
 
-![](calorie_exp_prediction.png)
+![Calorie Expenditure Prediction](https://github.com/mafis103/RFiles/blob/master/calorie_exp_prediction.png?raw=true)
 
 The graph shows that all models outperform the pure average. Logically, all values increase with increasing tolerance, allowing to cover more data range.
 
@@ -245,7 +245,7 @@ The NRMSE confirms the plot: It is lowest with SVM Linear (`svm`), followed by t
 Originally, a separate dataset `fitbit_train_no_na` was created in the hope to improve predicitions by keeping datasets that contain NA data in two to three columns. In the first prediction, those were handled via `na.action=na.exclude` which concerned 294 rows.
 The analysis shows that this had minimum impact on the performance of all models. 
 
-![](calorie_prediction_rnorm.png)
+![Calorie Expenditure Prediction (NA as RNORM)](https://github.com/mafis103/RFiles/blob/master/calorie_prediction_rnorm.png?raw=true)
 
 ```{r eval=FALSE}
 |method               |     NRMSE|
@@ -270,7 +270,7 @@ Therefore, a new dataset was created after initial analysis in order to check wh
 
 Both, plot and NRMSE show that they actually do. The performance is still slightly behin the model that completely ignores `NA` values.
 
-![](calorie_prediction_mean.png)
+![Calorie Expenditure Prediction (NA as Mean)](https://github.com/mafis103/RFiles/blob/master/calorie_prediction_mean.png?raw=true)
 
 
 ```{r eval=FALSE}
@@ -286,7 +286,7 @@ Both, plot and NRMSE show that they actually do. The performance is still slight
 ## Sleep Prediction
 The following plot shows the performance of all models for different tolerance values `val_sleep<-seq(0,30,2)` from 0 to 30 in steps of 2. This value is the tolerance granted for a hit below or above the actual predicted value. In the case of tolerance of `30`, this means that for a predicted value of `400` (min), an actual value of `330` (min) up to a value of `430`(min) would lead to a hit. 
 
-![](sleep_prediction.png)
+![Sleep Prediction](https://github.com/mafis103/RFiles/blob/master/sleep_prediction.png?raw=true)
 
 The graph shows that most models barely outperform the pure average. Logically, all values increase with increasing tolerance, allowing to cover more data range.
 The SVM linear model slightly outperforms other models and is correct with a tolerance of 30 in only approx. 56% of the cases. 
@@ -297,7 +297,7 @@ NRMSE <- function(true_ratings, predicted_ratings){
   sqrt(mean((true_ratings - predicted_ratings)^2))/mean(true_ratings)
 }
 ```
-
+\newpage
 The NRMSE confirms the plot: It is lowest with SVM Linear (`svm`), followed by the Random Forest Model (`rf`) and General Linear Model (`glm`). The ensemble is not represented in the table below.
 
 ```{r eval=FALSE}
@@ -310,7 +310,7 @@ The NRMSE confirms the plot: It is lowest with SVM Linear (`svm`), followed by t
 |Pure average         | 0.1707393|
 ```
 
-\newpage
+
 # Conclusion
 Starting with the assumption that sleep patterns and calorie expenditure are based on weekdays and activity throughout the day, I can only partially confirm my assumption based on the data collected over the course of over 2.5 years. 
 
