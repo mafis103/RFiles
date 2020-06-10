@@ -85,11 +85,8 @@ The other `NA`s however were unevenly distributed and not coherent. Note that fo
 Those were filtered and marked in Figure \ref{fig:na_sleep_values}.
 
 ```{r na_sleep_values, echo=FALSE, fig.cap="NA sleep values", out.width = '100%'}
-knitr::include_graphics(`r "https://i.ibb.co/nsFLV6z/naps.png"`) 
+knitr::include_graphics("https://i.ibb.co/nsFLV6z/naps.png") 
 ```
-
-![](https://i.ibb.co/nsFLV6z/naps.png) 
-
 
 
 This plot implicates that quite some of those values are rather short sleep periods, possibly too short to get to different sleep phases. Most of the individual `NA` values are significantly under der average sleeptime.

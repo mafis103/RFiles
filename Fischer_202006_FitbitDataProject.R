@@ -10,7 +10,8 @@ if(!require(readxl)) install.packages("readxl")
 if(!require(naniar)) install.packages("naniar")
 if(!require(gridExtra)) install.packages("gridExtra")
 if(!require(grid)) install.packages("grid")
-if(!require(rpart,rpart.plot)) install.packages("rpart,rpart.plot")
+if(!require(rpart)) install.packages("rpart,rpart.plot")
+if(!require(rpart.plot)) install.packages("rpart,rpart.plot")
 if(!require(reshape2)) install.packages("reshape2")
 
 #load data
